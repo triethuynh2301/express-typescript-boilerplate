@@ -7,38 +7,46 @@ enum HttpStatusCode {
 class BaseError extends Error {
   message: string;
   statusCode: number;
+  name: string;
 
-  constructor(msg: string, statusCode: number) {
+  constructor(msg: string, statusCode: number, name: string) {
     super();
 
-    this.message = msg.toUpperCase();
+    this.message = msg;
     this.statusCode = statusCode;
-    // console.error(this.stack);
+    this.name = name;
+    console.error(this.stack);
   }
 }
 
 class PageNotFoundError extends BaseError {
   constructor(
-    message: string = "Page not found",
-    statusCode: number = HttpStatusCode.NOT_FOUND
+    message: string = "Routes not found",
+    statusCode: number = HttpStatusCode.NOT_FOUND,
+    name: string = PageNotFoundError.name
   ) {
-    super(message, statusCode);
+    super(message, statusCode, name);
   }
 }
 
 class ResourceNotFoundError extends BaseError {
-  constructor(message: string, statusCode: number = HttpStatusCode.NOT_FOUND) {
-    super(message, statusCode);
-  }
-}
-
-class InvalidRequestError extends BaseError {
   constructor(
     message: string,
-    statusCode: number = HttpStatusCode.BAD_REQUEST
+    statusCode: number = HttpStatusCode.NOT_FOUND,
+    name: string = ResourceNotFoundError.name
   ) {
-    super(message, statusCode);
+    super(message, statusCode, name);
   }
 }
 
-export { PageNotFoundError, InvalidRequestError, ResourceNotFoundError };
+class DatabaseError extends BaseError {
+  constructor(
+    message: string,
+    statusCode: number = HttpStatusCode.INTERNAL_SERVER,
+    name: string = "DatabaseError"
+  ) {
+    super(message, statusCode, name);
+  }
+}
+
+export { PageNotFoundError, ResourceNotFoundError, DatabaseError };
