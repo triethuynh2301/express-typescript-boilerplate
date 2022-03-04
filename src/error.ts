@@ -2,6 +2,7 @@ enum HttpStatusCode {
   BAD_REQUEST = 400,
   NOT_FOUND = 404,
   INTERNAL_SERVER = 500,
+  UNAUTHORIZED = 401,
 }
 
 class BaseError extends Error {
@@ -43,10 +44,37 @@ class DatabaseError extends BaseError {
   constructor(
     message: string,
     statusCode: number = HttpStatusCode.INTERNAL_SERVER,
-    name: string = "DatabaseError"
+    name: string = DatabaseError.name
   ) {
     super(message, statusCode, name);
   }
 }
 
-export { PageNotFoundError, ResourceNotFoundError, DatabaseError };
+class UsernameTakenError extends DatabaseError {
+  constructor(
+    message: string = "Username already taken.",
+    statusCode: number = HttpStatusCode.INTERNAL_SERVER,
+    name: string = DatabaseError.name
+  ) {
+    super(message, statusCode, name);
+  }
+}
+
+class UnauthorizedError extends BaseError {
+  constructor(
+    message: string = "Access unauthorized.",
+    statusCode: number = HttpStatusCode.UNAUTHORIZED,
+    name: string = UnauthorizedError.name
+  ) {
+    super(message, statusCode, name);
+  }
+}
+
+export {
+  BaseError,
+  PageNotFoundError,
+  ResourceNotFoundError,
+  DatabaseError,
+  UsernameTakenError,
+  UnauthorizedError,
+};
